@@ -109,29 +109,35 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>public class <span class="typeNameLabel">GlobalFileUploadFilter</span>
 extends java.lang.Object</pre>
-<div class="block"><p>A GlobalFileUploadFilter configures a filter to have a fine-grained
+<div class="block"><p>A GlobalFileUploadFilter configures a filter for a fine-grained
  control over file type upload.</p>
 
- <p>If this is configured via a system property with file.upload.filter
+ <p>If the filter is configured via a system property <code>file.upload.filter</code>
  property key, an instance of this class will contain filters list as
  MagicNumberFileFilter object. Callers can access these filters via
  getFilterConfig() method. The filter list can then be passed into
  <code>accept(byte[] fileContent, List&lt;MagicNumberFileFilter&gt; filters)</code>
  along with file content bytes that need to be checked against these
- filters. When <code>accept()</code> method is called, file magic number (Signature),
- byte offset, file size, and any exception with regards to that file
- content will be evaluated against the already configured filter.</p>
+ filters. When <code>accept()</code> method is called, file <a href="https://www.filesignatures.net/">magic number</a>
+ (<a href="http://www.garykessler.net/library/file_sigs.html">Signature</a>), byte offset, file size, and any exception with regards to that file content will be evaluated against the already configured filter.</p>
 
- <p>In addition to global filter configuration, filter can also be configured
+ <p>The system property filter can be configured with the following syntax:</p>
+ <br>
+      <pre>
+        file.upload.filter="signature=504B0304,offset=0,maxSize=10kb,exc=[@ *]-signature=..."
+      </pre>
+ 
+ <p>In addition to global filter configuration via system property, filter can also be configured
  on a use-case basis. If the application's file upload requirement is not the
  same throughout the application, then this filter can also be configured
- programmatically by calling <code>constructFilters(String config, List&lt;MagicNumberFileFilter&gt; filters)</code>
- and providing the String pattern syntax for the filter configuration as well as an empty list
- of the MagicNumberFileFilter type. The String config will be parsed and a list of filters
- will be returned to the caller and eventually that list can be passed into <code>accept()</code></p>
+ programmatically, by calling <code>constructFilters(String config, List&lt;MagicNumberFileFilter&gt; filters)</code>
+ and providing the String pattern syntax for the filter configuration, as well as an empty list
+ of the MagicNumberFileFilter type. The String config will be parsed and the empty list will then be 
+ populated with filters and will be returned to the caller. The returned list can then be passed into <code>accept()
+ for file content verification</code></p>
 
  <p>For example to configure the filter to only allow a Zip file upload which contains ascii documents
- with specific characters the filter configuration looks like below:</p>
+ with specific characters the filter configuration may look like below:</p>
  <br>
      <pre>
          byte[] fileContentToCheck = ...;
